@@ -11,7 +11,6 @@
 (depends-on "go-mode")
 (depends-on "jedi")
 (depends-on "linum")
-(depends-on "magit")
 (depends-on "markdown-mode")
 (depends-on "multiple-cursors")
 (depends-on "pallet")

@@ -176,13 +176,6 @@
 (setenv "LC_ALL" "ja_JP.UTF-8")
 
 ;;; php
-(require 'php-mode)
-(add-hook 'php-mode-user-hook
-	  '(lambda ()
-	     (setq tab-width 4)
-	     (setq c-basic-offset 4)
-	     (setq indent-tabs-mode nil)))
-(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 
 ;;; golang
 (require 'go-mode-load)
@@ -202,3 +195,33 @@
 (provide 'init)
 ;;; init.el ends here
 (put 'dired-find-alternate-file 'disabled nil)
+
+;; 表示が崩れるのを防ぐ
+(menu-bar-mode -1)
+
+;; カーソル移動を軽くする
+(require 'hl-line)
+;;; hl-lineを無効にするメジャーモードを指定する
+(defvar global-hl-line-timer-exclude-modes '(todotxt-mode))
+(defun global-hl-line-timer-function ()
+  (unless (memq major-mode global-hl-line-timer-exclude-modes)
+    (global-hl-line-unhighlight-all)
+    (let ((global-hl-line-mode t))
+      (global-hl-line-highlight))))
+(setq global-hl-line-timer
+      (run-with-idle-timer 0.03 t 'global-hl-line-timer-function))
+;; (cancel-timer global-hl-line-timer)
+(put 'upcase-region 'disabled nil)
+
+;; point-undo
+(require 'point-undo)
+(define-key global-map [f7] 'point-undo)
+(define-key global-map [S-f7] 'point-redo)
+
+;; インデント
+(defun all-indent ()
+     (interactive)
+     (mark-whole-buffer)
+     (indent-region (region-beginning)(region-end))
+     (point-undo))
+(global-set-key (kbd  "C-x C-]") 'all-indent)
